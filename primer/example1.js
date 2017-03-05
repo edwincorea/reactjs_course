@@ -22,11 +22,13 @@ class AppComponent extends React.Component {
     }
 
     increment(){
-        console.log("INC");
+        const {count} = this.state;
+        this.setState({count: count + 1})
     }
 
     decrement(){
-        console.log("DEC");
+        const {count} = this.state;
+        this.setState({count: count - 1})
     }
 }
 
