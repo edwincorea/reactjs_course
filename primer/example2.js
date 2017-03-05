@@ -1,12 +1,15 @@
 //stateless component
-const TodoList = ({todos}) => {
+const TodoList = ({todos, onSetTodoStatus}) => {
     return (
         <ul>
             {todos.map(todo => 
                 <li key={todo.id}>
-                    {todo.isCompleted 
-                        ? <del>{todo.text}</del>
-                        : todo.text}
+                    <label>
+                        <input type="checkbox" checked={todo.isCompleted} onChange={e=>onSetTodoStatus(todo, e.target.checked)}/>
+                        {todo.isCompleted 
+                            ? <del>{todo.text}</del>
+                            : todo.text}
+                    </label>
                 </li>)}
         </ul>
     );
@@ -29,6 +32,7 @@ class AppComponent extends React.Component {
         };
 
         this._onShowCompletedChanged = this._onShowCompletedChanged.bind(this);
+        this._setTodoStatus = this._setTodoStatus.bind(this);
     }
 
     render(){
@@ -45,7 +49,7 @@ class AppComponent extends React.Component {
                     Show Completed
                     <input type="checkbox" checked={filter.showCompleted} onChange={this._onShowCompletedChanged} />
                 </label>
-                <TodoList todos={filteredTodos} />
+                <TodoList todos={filteredTodos} onSetTodoStatus={this._setTodoStatus} />
             </div>
         );
     }
@@ -54,6 +58,19 @@ class AppComponent extends React.Component {
         this.setState({
             filter: {showCompleted: e.target.checked}
         });        
+    }
+
+    _setTodoStatus(todo, isCompleted){
+        const {todos} = this.state;
+        const newTodos = todos.map(oldTodo => {
+            if(oldTodo.id !== todo.id)
+                return oldTodo;
+
+            return Object.assign({}, oldTodo, {isCompleted});
+        });        
+        this.setState({
+            todos: newTodos
+        });
     }
 }
 
