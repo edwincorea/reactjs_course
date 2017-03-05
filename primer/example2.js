@@ -2,7 +2,12 @@
 const TodoList = ({todos}) => {
     return (
         <ul>
-            <li>ToDo List</li>
+            {todos.map(todo => 
+                <li key={todo.id}>
+                    {todo.isCompleted 
+                        ? <del>{todo.text}</del>
+                        : todo.text}
+                </li>)}
         </ul>
     );
 };
