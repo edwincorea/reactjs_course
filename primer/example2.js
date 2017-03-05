@@ -1,3 +1,12 @@
+//stateless component
+const TodoList = ({todos}) => {
+    return (
+        <ul>
+            <li>ToDo List</li>
+        </ul>
+    );
+};
+
 class AppComponent extends React.Component {
     constructor(props){
         super(props);
@@ -18,7 +27,11 @@ class AppComponent extends React.Component {
     }
 
     render(){
-        const {filter} = this.state;
+        const {filter, todos} = this.state;
+        const filteredTodos = filter.showCompleted 
+            ? todos
+            : todos.filter(todo => !todo.isCompleted)
+
 
         return (
             <div>
@@ -27,6 +40,7 @@ class AppComponent extends React.Component {
                     Show Completed
                     <input type="checkbox" checked={filter.showCompleted} onChange={this._onShowCompletedChanged} />
                 </label>
+                <TodoList todos={filteredTodos} />
             </div>
         );
     }
