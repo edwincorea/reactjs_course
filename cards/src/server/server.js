@@ -19,5 +19,3 @@ switch (a){
         console.log("1");
         break;
 }
-
-
