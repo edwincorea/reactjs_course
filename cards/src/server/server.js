@@ -15,7 +15,7 @@ function fail(){
     throw new Error("Error!!!");
 }
 
-fail();
+//fail();
 
 const a = 1;
 switch (a){
