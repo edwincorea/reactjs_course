@@ -11,7 +11,11 @@ class AppComponent {
     }
 }
 
-console.log(<AppComponent />);
+function fail(){
+    throw new Error("Error!!!");
+}
+
+fail();
 
 const a = 1;
 switch (a){

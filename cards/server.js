@@ -1,4 +1,4 @@
 //bootstrap entire server application
 
-// ToDo: Add sourcemap support.
+require("source-map-support").install();
 require("./build/server");
