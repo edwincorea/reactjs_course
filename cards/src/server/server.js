@@ -1,25 +1,33 @@
-const test = "test1";
-console.log(`Hello ${test}`);
+import express from "express";
+import http from "http";
 
-const obj = {hei: 1};
-const obj2 = {...obj, prop: 2};
-console.log(obj2);
+import {isDevelopment} from "./settings";
 
-class AppComponent {
-    static PropTypes = {
-        test: "1"
-    }
-}
+// -------------------
+// Setup
+const app = express();
+const server = new http.Server(app);
 
-function fail(){
-    throw new Error("Error!!!");
-}
+// -------------------
+// Configuration
+app.set("view engine", "pug");
+app.use(express.static("public"));
 
-//fail();
+const useExternalStyles = !isDevelopment;
+const scriptRoot = isDevelopment
+    ? "http://localhost:8080/build"
+    : "/build";
 
-const a = 1;
-switch (a){
-    case 1: 
-        console.log("1");
-        break;
-}
+app.get("*", (req, res) => {
+    res.render("index", {
+        useExternalStyles,
+        scriptRoot
+    });
+});
+
+// -------------------
+// Startup
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+    console.log(`Started http server on ${port}`);
+});
