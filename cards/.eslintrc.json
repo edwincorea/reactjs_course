@@ -33,6 +33,9 @@
         "react/jsx-uses-vars": "error"
     },
     "globals": {
-        "console": false //cannot assign values to console
+        "console": false, //cannot assign values to console
+        "process": false,
+        "IS_PRODUCTION": false,
+        "IS_DEVELOPMENT": false
     }
 }
