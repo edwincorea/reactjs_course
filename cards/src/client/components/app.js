@@ -3,16 +3,22 @@ import "./app.scss";
 import React, {Component} from "react";
 
 class AppContainer extends Component {
-    //problem #1: everytime component gets reloaded, it is remounted.
-    //Solution: 
-    //1. react-hot-loader/babel in .babelrc
-    //2. react-hot-loader/patch in webpack.config.js
-    componentDidMount() {
-        console.log("Component hierarchy is recreated!");
-    }    
+    constructor(props) {
+        super(props);
+        this._click = this._click.bind(this);
+    }
 
     render() {
-        return <h1>Hello World!</h1>;
+        return (
+            <section>
+                <h1>Hello World</h1>
+                <button onClick={this._click}>I am button please click</button>
+            </section>
+        );
+    }
+
+    _click() {
+        console.log("Clicked! :)");
     }
 } 
 

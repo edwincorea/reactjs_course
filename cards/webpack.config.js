@@ -11,7 +11,7 @@ const vendor = [
 
 function createConfig(isDebug){
     //source mappinge
-    const devtool = isDebug ? "cheap-module-source-map" : null;
+    const devtool = isDebug ? "eval-source-map" : null;
 
     const plugins = [
         //extract vendor components from main bundle
