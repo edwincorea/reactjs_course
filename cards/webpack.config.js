@@ -8,7 +8,7 @@ const vendor = [
 ];
 
 function createConfig(isDebug){
-    //source mapping
+    //source mappinge
     const devtool = isDebug ? "cheap-module-source-map" : null;
 
     const plugins = [
@@ -37,8 +37,17 @@ function createConfig(isDebug){
     const clientEntry = ["./src/client/client.js"];
     let publicPath = "/build/";
 
-    if (isDebug) {        
+    if (isDebug) {  
     } else {
+        plugins.push(
+            //Search for equal or similar files and deduplicate them in the output.
+            new webpack.optimize.DedupePlugin(),
+            new ExtractTextPlugin("[name].css"),
+            new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
+        );
+
+        loaders.css.loader = ExtractTextPlugin.extract("style", "css");
+        loaders.sass.loader = ExtractTextPlugin.extract("style", "css!sass");
     }
 
     return {
