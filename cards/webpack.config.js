@@ -37,7 +37,10 @@ function createConfig(isDebug){
     const clientEntry = ["./src/client/client.js"];
     let publicPath = "/build/";
 
-    if (isDebug) {  
+    if (isDebug) {
+        plugins.push(new webpack.HotModuleReplacementPlugin());
+        clientEntry.unshift("webpack-dev-server/client?http://localhost:8080/", "webpack/hot/only-dev-server");
+        publicPath = "http://localhost:8080/build/"; 
     } else {
         plugins.push(
             //Search for equal or similar files and deduplicate them in the output.
