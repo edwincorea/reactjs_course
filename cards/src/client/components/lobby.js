@@ -1,6 +1,7 @@
 import "./lobby.scss";
 
 import React, {Component} from "react";
+import Chat from "./chat";
 
 class LobbyContainer extends Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class LobbyContainer extends Component {
         return (
             <div className="c-lobby">
                 <GameList games={games} joinGame={this._joinGame} />
+                <Chat />
             </div>
         );
     }
