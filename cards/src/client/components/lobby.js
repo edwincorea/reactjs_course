@@ -8,10 +8,15 @@ class LobbyContainer extends Component {
         super(props);
 
         this._joinGame = this._joinGame.bind(this);
+        this._sendMessage = this._sendMessage.bind(this);
     }
 
     _joinGame(game) {
         console.log(`TODO: Join Game ${game.title}`);        
+    }
+
+    _sendMessage(message) {
+        console.log(`TODO: Sending ${message}`);        
     }
 
     render() {
@@ -22,11 +27,23 @@ class LobbyContainer extends Component {
             {title: "Game 3", id: 3, players: ["player7", "player8", "player9"]},
             {title: "Game 4", id: 4, players: ["player10", "player11", "player12"]},
         ];
+
+        const opSendMessage = {can: true, inProgress: false};
+        const messages = [
+            {index: 1, name: "Person1", message: "Test1"},
+            {index: 2, name: "Person2", message: "Test2"},
+            {index: 3, name: "Person3", message: "Test3"},
+            {index: 4, name: "Person4", message: "Test4"},
+            {index: 5, name: "Person5", message: "Test5"}
+        ];
         
         return (
             <div className="c-lobby">
                 <GameList games={games} joinGame={this._joinGame} />
-                <Chat />
+                <Chat                 
+                    messages={messages}
+                    opSendMessage={opSendMessage}
+                    sendMessage = {this._sendMessage} />
             </div>
         );
     }
