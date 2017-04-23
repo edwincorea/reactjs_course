@@ -5,8 +5,9 @@ import ReactDom from "react-dom";
 
 import {Router, browserHistory as history} from "react-router";
 
-import * as A from "./actions";
 import {Dispatcher} from "shared/dispatcher"; //shared is a webpack alias pointing to /src/server/shared/
+import * as A from "./actions";
+import {StoreProvider} from "./lib/component";
 import createStores from "./stores";
 
 //------------------------------------------------------
@@ -22,10 +23,12 @@ const stores = createStores(services);
 // Render
 function main() {
     const routes = require("./routes").default();
-    ReactDom.render(        
-        <Router history={history}>
-            {routes}
-        </Router>, 
+    ReactDom.render(
+        <StoreProvider stores={stores} services={services}>
+            <Router history={history}>
+                {routes}
+            </Router>
+        </StoreProvider>, 
         document.getElementById("mount"));
 }
 
