@@ -5,6 +5,19 @@ import ReactDom from "react-dom";
 
 import {Router, browserHistory as history} from "react-router";
 
+import * as A from "./actions";
+import {Dispatcher} from "shared/dispatcher"; //shared is a webpack alias pointing to /src/server/shared/
+import createStores from "./stores";
+
+//------------------------------------------------------
+// Services
+const dispatcher = new Dispatcher();
+const services = {dispatcher};
+
+//------------------------------------------------------
+// Stores
+const stores = createStores(services);
+
 //------------------------------------------------------
 // Render
 function main() {
