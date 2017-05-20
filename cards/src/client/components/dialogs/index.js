@@ -1,8 +1,8 @@
 import _ from "lodash";
 
-//instruct webpack to package up every single file in dialogs directory, 
-//not included subdirectories, that has .js extension
-const context = require.context("./", false, /\.js^/);
+//instruct webpack to package up every single .js file in dialogs directory, 
+//not included subdirectories
+const context = require.context("./", false, /\.js$/);
 const components = context
     .keys()
     .filter(name => name.indexOf("index") == -1) //filter out current file
