@@ -23,6 +23,10 @@ class LoginDialog extends ContainerBase {
         });
     }
 
+    componentDidMount() {
+        this._username.input.focus();        
+    }
+
     _login(e) {
         e.preventDefault();
         this.request(A.userLogin(this._username.value));

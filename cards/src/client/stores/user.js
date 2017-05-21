@@ -1,4 +1,4 @@
-import {Observable, BehaviorSubject} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 
 import {validateName} from "shared/validation/user";
 import {mapOp$} from "shared/observable";

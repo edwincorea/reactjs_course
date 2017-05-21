@@ -15,31 +15,22 @@ class LobbyContainer extends ContainerBase {
     }
 
     _joinGame(game) {
-        console.log(`TODO: Join Game ${game.title}`);        
+        this.request(A.gameJoin(game.id));
     }
 
     _sendMessage(message) {
-        console.log(`TODO: Sending ${message}`);        
+        this.request(A.lobbySendMessage(message));
+    }
+
+    componentWillMount() {
+        const {stores: {lobby}} = this.context;
+        this.subscribe(lobby.opSendMessage$, opSendMessage => this.setState({opSendMessage}));
+        this.subscribe(lobby.view$, lobby => this.setState({lobby}));
     }
 
     render() {
-        //in the future get games from a different source such as an API
-        const games = [
-            {title: "Game 1", id: 1, players: ["player1", "player2", "player3"]},
-            {title: "Game 2", id: 2, players: ["player4", "player5", "player6"]},
-            {title: "Game 3", id: 3, players: ["player7", "player8", "player9"]},
-            {title: "Game 4", id: 4, players: ["player10", "player11", "player12"]},
-        ];
+        const {lobby: {games, messages}, opSendMessage} = this.state;
 
-        const opSendMessage = {can: true, inProgress: false};
-        const messages = [
-            {index: 1, name: "Person1", message: "Test1"},
-            {index: 2, name: "Person2", message: "Test2"},
-            {index: 3, name: "Person3", message: "Test3"},
-            {index: 4, name: "Person4", message: "Test4"},
-            {index: 5, name: "Person5", message: "Test5"}
-        ];
-        
         return (
             <div className="c-lobby">
                 <GameList games={games} joinGame={this._joinGame} />
@@ -65,24 +56,27 @@ class LobbySidebar extends ContainerBase {
     }
 
     _createGame() {
-        console.log("TODO: Create Game");
+        this.request(A.gameCreate());
+    }
+
+    componentWillMount() {
+        const {stores: {user, game}} = this.context;
+        this.subscribe(user.opLogin$, opLogin => this.setState({opLogin}));        
+        this.subscribe(game.opCreateGame$, opCreateGame => this.setState({opCreateGame}));
     }
 
     render() {
-        const canLogin = true;
-        const canCreateGame = true;
-        const createGameInProgress = false;
-
+        const {opLogin, opCreateGame} = this.state; 
         return (
             <section className="c-lobby-sidebar">
                 <div className="m-sidebar-buttons">
-                    {!canLogin ? null : 
+                    {!opLogin.can ? null : 
                         <button className="m-button primary" onClick={this._login}>Login</button>}
-                    {!canCreateGame ? null : 
+                    {!opCreateGame.can ? null : 
                         <button 
                             className="m-button good"
                             onClick={this._createGame}
-                            disabled={createGameInProgress}>
+                            disabled={opCreateGame.inProgress}>
                             Create Game
                         </button>}                        
                 </div>
