@@ -11,11 +11,16 @@ class LoginDialog extends ContainerBase {
 
         this._login = this._login.bind(this);
         this._close = this._close.bind(this);
+    }
 
-        //temporary... eventually comes from the store
-        this.state = {
-            opLogin: {can: true, inProgress: false}            
-        };
+    componentWillMount() {
+        const {stores: {user}} = this.context;
+        this.subscribe(user.opLogin$, opLogin => this.setState({opLogin}));
+
+        this.subscribe(user.details$, details => {
+            if (details.isLoggedIn)
+                this.dispatch(A.dialogSet(A.DIALOG_LOGIN, false));
+        });
     }
 
     _login(e) {
