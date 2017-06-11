@@ -7,7 +7,7 @@ import * as A from "../actions";
 const defaultView = {
     id: 42,
     title: "Player1's Game",
-    step: A.STEP_SETUP,
+    step: A.STEP_DISPOSED,
     options: {
         scoreLimit: 5,
         sets: ["1ed"]
@@ -18,6 +18,11 @@ const defaultView = {
         {id: 3, name: "Player3", score: 4, isCzar: true, isPlaying: false, isWinner: false},
         {id: 4, name: "Player4", score: 2, isCzar: false, isPlaying: false, isWinner: false}
     ],
+    messages: [
+        {index: 1, name: "Player1", message: "Message1"},
+        {index: 2, name: "Player1", message: "Message2"},
+        {index: 3, name: "Player1", message: "Message3"},
+        {index: 4, name: "Player1", message: "Message4"}],
     round: null,
     timer: null
 };
