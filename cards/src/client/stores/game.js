@@ -7,7 +7,7 @@ import * as A from "../actions";
 const defaultView = {
     id: 42,
     title: "Player1's Game",
-    step: A.STEP_DISPOSED,
+    step: A.STEP_SETUP,
     options: {
         scoreLimit: 5,
         sets: ["1ed"]
