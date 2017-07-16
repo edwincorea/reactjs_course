@@ -13,16 +13,16 @@ const defaultView = {
         sets: ["1ed"]
     },
     players: [
-        {id: 1, name: "Player1", score: 3, isCzar: false, isPlaying: false, isWinner: true},
+        {id: 1, name: "Edwin", score: 3, isCzar: false, isPlaying: true, isWinner: false},
         {id: 2, name: "Player2", score: 1, isCzar: false, isPlaying: true, isWinner: false},
         {id: 3, name: "Player3", score: 4, isCzar: true, isPlaying: false, isWinner: false},
         {id: 4, name: "Player4", score: 2, isCzar: false, isPlaying: false, isWinner: false}
     ],
     messages: [
-        {index: 1, name: "Player1", message: "Message1"},
-        {index: 2, name: "Player1", message: "Message2"},
-        {index: 3, name: "Player1", message: "Message3"},
-        {index: 4, name: "Player1", message: "Message4"}],
+        {index: 1, name: "Edwin", message: "Message1"},
+        {index: 2, name: "Edwin", message: "Message2"},
+        {index: 3, name: "Edwin", message: "Message3"},
+        {index: 4, name: "Edwin", message: "Message4"}],
     round: {
         blackCard: {
             id: 1,
@@ -41,20 +41,21 @@ const defaultView = {
 
 const defaultPlayerView = {
     id: 1,
-    hand: [],
+    hand: [
+        {id: 2, text: "Card 1", set: "1ed"},
+        {id: 3, text: "Card 2", set: "1ed"},
+        {id: 4, text: "Card 3", set: "1ed"},
+        {id: 5, text: "Card 4", set: "1ed"},        
+        {id: 7, text: "Card 6", set: "1ed"},
+        {id: 8, text: "Card 7", set: "1ed"},
+        {id: 9, text: "Card 8", set: "1ed"},
+        {id: 10, text: "Card 9", set: "1ed"},
+        {id: 11, text: "Card 10", set: "1ed"}        
+    ],
     stack: {
         id: 2,
         cards: [
-            {id: 2, text: "Card 1", set: "1ed"},
-            {id: 3, text: "Card 2", set: "1ed"},
-            {id: 4, text: "Card 3", set: "1ed"},
-            {id: 5, text: "Card 4", set: "1ed"},
-            {id: 6, text: "Card 5", set: "1ed"},
-            {id: 7, text: "Card 6", set: "1ed"},
-            {id: 8, text: "Card 7", set: "1ed"},
-            {id: 9, text: "Card 8", set: "1ed"},
-            {id: 10, text: "Card 9", set: "1ed"},
-            {id: 11, text: "Card 10", set: "1ed"}
+            {id: 6, text: "Card 5", set: "1ed"}
         ]
     }
 };
