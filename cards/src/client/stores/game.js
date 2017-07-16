@@ -7,7 +7,7 @@ import * as A from "../actions";
 const defaultView = {
     id: 42,
     title: "Edwin's Game",
-    step: A.STEP_JUDGE_STACKS,
+    step: A.STEP_CHOOSE_WHITES,
     options: {
         scoreLimit: 5,
         sets: ["1ed"]
