@@ -7,7 +7,7 @@ import * as A from "../actions";
 const defaultView = {
     id: 42,
     title: "Edwin's Game",
-    step: A.STEP_CHOOSE_WHITES,
+    step: A.STEP_JUDGE_STACKS,
     options: {
         scoreLimit: 5,
         sets: ["1ed"]
@@ -31,9 +31,9 @@ const defaultView = {
             whiteCardCount: 3
         },
         stacks: [
-            {id: 1, count: 3},
-            {id: 2, count: 1},
-            {id: 3, count: 2}
+            {id: 1, cards: [{id: 1, text: "Text1", set: "Set1"}]},
+            {id: 2, cards: [{id: 2, text: "Text2", set: "Set2"}]},
+            {id: 3, cards: [{id: 3, text: "Text3", set: "Set3"}]},
         ]
     },
     timer: null
