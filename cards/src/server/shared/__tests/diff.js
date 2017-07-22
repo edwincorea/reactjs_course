@@ -37,6 +37,8 @@ function runDiffTests(tests) {
                     expect(result).toEqual(diff);
                 });
             });
+
+          //TODO: Add Merge Test
         } else if (_.isObject(test)) {
             describe(`${key}:`, () => runDiffTests(test));
         } 
