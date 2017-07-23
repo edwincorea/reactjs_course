@@ -101,8 +101,39 @@ runDiffTests({
                 {id: 1, text: "text1"},
                 {id: 2, text: "text2Updated"}
             ],
-            {$update: {2: {text: "text2Updated"}}, ids: [1, 2]}
+            {$update: {2: {text: "text2Updated"}}}
+        ],
+        "update and reorder": [
+            [
+                {id: 1, text: "text1"},
+                {id: 2, text: "text2"}
+            ],
+            [
+                {id: 2, text: "text2Updated"},
+                {id: 1, text: "text1"}                
+            ],
+            {$update: {2: {text: "text2Updated"}}, ids: [2, 1]}
         ]        
+    },
+    objects: {
+        "throws on invalid type": () => {
+            expect(() => makeDiff("text1", {})).toThrow();
+        },
+        "set nested": [
+            {key1: {innerKey1: {test1: 1, test2: "2"}}},
+            {key1: {innerKey1: {test1: 2, test2: "2"}}},
+            {key1: {innerKey1: {test1: 2}}}
+        ],
+        "add property": [
+            {unchanged: "test1"},
+            {unchanged: "test1", added: "test2"},
+            {added: "test2"}
+        ],
+        "remove property": [
+            {unchanged: "test1", toRemove: 123},
+            {unchanged: "test1"},
+            {toRemove: {$remove: true}}
+        ]
     }
 });
 

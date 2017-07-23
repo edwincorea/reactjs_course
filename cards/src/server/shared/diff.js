@@ -108,7 +108,42 @@ export const makeDiffArray = (before, after, location = "") => {
 };
 
 export const makeDiffObject = (before, after, location = "") => {
-    return IS_UNCHANGED;
+    if (before != null && !_.isObject(before))
+        throw new Error(`${location}: you can't change the type of a value`);
+
+    const seen = {};
+    let obj = {};
+    let changed = null;
+    for (let key in after) {
+        if (!after.hasOwnProperty(key))
+            continue;
+        
+        seen[key] = true;
+        const value = after[key];
+        if (before == null || !before.hasOwnProperty(key)) {
+            obj[key] = value;
+            changed = true;
+        } else {
+            const result = makeDiff(before[key], value, `${location}.${key}`);
+            if (result != IS_UNCHANGED) {
+                obj[key] = result;
+                changed = true;
+            }
+        }
+    }
+
+    //handle remove properties
+    if (before != null) {
+        for (let key in before) {
+            if (!before.hasOwnProperty(key) || seen[key])
+                continue;
+            
+            changed = true;
+            obj[key] = {$remove: true};
+        }
+    }
+
+    return changed ? obj : IS_UNCHANGED;
 };
 
 export const makeDiffScalar = (before, after) => {
