@@ -1,7 +1,10 @@
 import express from "express";
 import http from "http";
+import path from "path";
+import fs from "fs";
 
 import {isDevelopment} from "./settings";
+import {CardDatabase} from "./model/cards";
 
 // -------------------
 // Setup
@@ -24,6 +27,20 @@ app.get("*", (req, res) => {
         scriptRoot
     });
 });
+
+// -------------------
+// Services
+const cards = new CardDatabase();
+// ./cards/data/sets
+const setsPath = path.join(global.appRoot, "data", "sets");
+for (let file of fs.readdirSync(setsPath)) {
+    const setId = path.parse(file).name; //name of the file w/o extension
+    const setPath = path.join(setsPath, file);
+    cards.addSet(setId, JSON.parse(fs.readFileSync(setPath, "utf-8")));
+}
+
+console.log(cards.generateDecks());
+
 
 // -------------------
 // Startup
