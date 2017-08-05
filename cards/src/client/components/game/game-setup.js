@@ -105,7 +105,7 @@ const SetList = ({sets, toggleSet}) => {
     return (
         <ul className="sets-list">
             {sets.map(set => 
-                <li key={set.id} classname={set.isSelected ? "is-select" : null} onClick={() => toggleSet(set)}>
+                <li key={set.id} className={set.isSelected ? "is-select" : null} onClick={() => toggleSet(set)}>
                     {set.name}
                 </li>)}
         </ul>
