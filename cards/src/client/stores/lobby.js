@@ -3,30 +3,20 @@ import {Observable} from "rxjs";
 import {Validator} from "shared/validation";
 import {validateMessage} from "shared/validation/chat";
 import {mapOp$} from "shared/observable";
+import {createView$} from "../lib/stores";
 import * as A from "../actions";
 
 const defaultView = {
-    messages: [
-        {index: 1, name: "Person1", message: "Test1"},
-        {index: 2, name: "Person2", message: "Test2"},
-        {index: 3, name: "Person3", message: "Test3"},
-        {index: 4, name: "Person4", message: "Test4"},
-        {index: 5, name: "Person5", message: "Test5"}
-    ],
-    games: [
-        {title: "Game 1", id: 1, players: ["player1", "player2", "player3"]},
-        {title: "Game 2", id: 2, players: ["player4", "player5", "player6"]},
-        {title: "Game 3", id: 3, players: ["player7", "player8", "player9"]},
-        {title: "Game 4", id: 4, players: ["player10", "player11", "player12"]},
-    ]
+    messages: [],
+    games: []
 };
 
 export default class LobbyStore {
-    constructor({dispatcher}, user) {
-        this.view$ = Observable.of(defaultView);
+    constructor({dispatcher, socket}, user) {
+        this.view$ = createView$(dispatcher, A.VIEW_LOBBY, defaultView);
 
         dispatcher.onRequest({
-            [A.LOBBY_JOIN]: action => dispatcher.succeed(action),
+            [A.LOBBY_JOIN]: action => socket.emit("action", action),
             
             [A.LOBBY_SEND_MESSAGE]: action => {
                 const validator = new Validator();
@@ -40,7 +30,7 @@ export default class LobbyStore {
                     return;
                 }
 
-                //ToDo: send to socket
+                socket.emit("action", action);
             }
         });
 

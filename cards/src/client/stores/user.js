@@ -1,5 +1,3 @@
-import {BehaviorSubject} from "rxjs";
-
 import {validateName} from "shared/validation/user";
 import {mapOp$} from "shared/observable";
 import * as A from "../actions";
@@ -12,10 +10,15 @@ const defaultDetails = {
 };
 
 export default class UserStore {
-    constructor({dispatcher}){
+    constructor({dispatcher, socket}){
         // BehaviorSubject: consumer-producer values. 
         // For now it is used because there is no connection to server.
-        this.details$ = new BehaviorSubject(defaultDetails);
+        this.details$ = dispatcher.on$(A.USER_DETAILS_SET)
+            .map(a => a.details)
+            .startWith(defaultDetails)
+            .publishReplay(1);
+
+        this.details$.connect();        
 
         //copies every value from details to UserStore.
         this.details$.subscribe(details =>
@@ -29,13 +32,7 @@ export default class UserStore {
                     return;
                 }
 
-                //fake success response from login request
-                dispatcher.succeed(action);
-                this.details$.next({
-                    isLoggedIn: true,
-                    id: 333,
-                    name: action.name
-                });
+                socket.emit("action", action);
             }
         });
         

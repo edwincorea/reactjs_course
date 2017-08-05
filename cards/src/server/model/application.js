@@ -1,6 +1,7 @@
 import * as A from "../actions";
 import {Dispatcher} from "../shared/dispatcher";
 import {RoomBase} from "../lib/room";
+import {Lobby} from "./lobby";
 
 export class Application extends RoomBase {
     get view() {
@@ -11,9 +12,9 @@ export class Application extends RoomBase {
 
     constructor(cards) {
         super(A.VIEW_APP);
-        this.dispatcher = new Dispatcher();
-        // @TODO: make Lobby
+        this.dispatcher = new Dispatcher();        
         this.cards = cards;
+        this.lobby = new Lobby(this);
     }
 }
 
