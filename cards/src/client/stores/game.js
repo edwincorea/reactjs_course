@@ -2,81 +2,41 @@ import _ from "lodash";
 import {Observable, BehaviorSubject} from "rxjs";
 import {mapOp$} from "shared/observable";
 import * as A from "../actions";
+import {createView$} from "../lib/stores";
 
 //dummy data
 const defaultView = {
-    id: 42,
-    title: "Edwin's Game",
-    step: A.STEP_SETUP,
-    options: {
-        scoreLimit: 5,
-        sets: ["1ed"]
-    },
-    players: [
-        {id: 1, name: "Edwin", score: 3, isCzar: false, isPlaying: true, isWinner: false},
-        {id: 2, name: "Player2", score: 1, isCzar: false, isPlaying: true, isWinner: false},
-        {id: 3, name: "Player3", score: 4, isCzar: true, isPlaying: false, isWinner: false},
-        {id: 4, name: "Player4", score: 2, isCzar: false, isPlaying: false, isWinner: false}
-    ],
-    messages: [
-        {index: 1, name: "Edwin", message: "Message1"},
-        {index: 2, name: "Edwin", message: "Message2"},
-        {index: 3, name: "Edwin", message: "Message3"},
-        {index: 4, name: "Edwin", message: "Message4"}],
-    round: {
-        blackCard: {
-            id: 1,
-            text: "Does something does something?",
-            set: "1ed",
-            whiteCardCount: 3
-        },
-        stacks: [
-            {id: 1, cards: [{id: 1, text: "Text1", set: "Set1"}]},
-            {id: 2, cards: [{id: 2, text: "Text2", set: "Set2"}]},
-            {id: 3, cards: [{id: 3, text: "Text3", set: "Set3"}]},
-        ]
-    },
+    id: null,
+    title: null,
+    step: A.STEP_DISPOSED,
+    options: {},
+    players: [],
+    messages: [],
+    round: null,
     timer: null
 };
 
 const defaultPlayerView = {
-    id: 1,
-    hand: [
-        {id: 2, text: "Card 1", set: "1ed"},
-        {id: 3, text: "Card 2", set: "1ed"},
-        {id: 4, text: "Card 3", set: "1ed"},
-        {id: 5, text: "Card 4", set: "1ed"},        
-        {id: 7, text: "Card 6", set: "1ed"},
-        {id: 8, text: "Card 7", set: "1ed"},
-        {id: 9, text: "Card 8", set: "1ed"},
-        {id: 10, text: "Card 9", set: "1ed"},
-        {id: 11, text: "Card 10", set: "1ed"}        
-    ],
-    stack: {
-        id: 2,
-        cards: [
-            {id: 6, text: "Card 5", set: "1ed"}
-        ]
-    }
+    id: null,
+    hand: [],
+    stack: null
 };
 
 export default class GameStore {
-    constructor({dispatcher}, user) {
+    constructor({dispatcher, socket}, user) {
+        const passthroughAction = action => socket.emit("action", action);
         dispatcher.onRequest({
-            [A.GAME_CREATE]: action => {
-                dispatcher.succeed(action);
-                dispatcher.succeed(A.gameJoin(42));
-            },
-            [A.GAME_JOIN]: action => dispatcher.succeed(action),
-            [A.GAME_SET_OPTIONS]: action =>  dispatcher.succeed(action),
-            [A.GAME_START]: action =>  dispatcher.succeed(action),
-            [A.GAME_SELECT_CARD]: action =>  dispatcher.succeed(action),
-            [A.GAME_SELECT_STACK]: action =>  dispatcher.succeed(action),
-            [A.GAME_SEND_MESSAGE]: action =>  dispatcher.succeed(action)
+            [A.GAME_CREATE]: passthroughAction,
+            [A.GAME_JOIN]: passthroughAction,
+            [A.GAME_SET_OPTIONS]: passthroughAction,
+            [A.GAME_START]: passthroughAction,
+            [A.GAME_SELECT_CARD]: passthroughAction,
+            [A.GAME_SELECT_STACK]: passthroughAction,
+            [A.GAME_SEND_MESSAGE]: passthroughAction
         });
 
-        this.view$ = new BehaviorSubject(defaultView);
-        this.player$ = new BehaviorSubject(defaultPlayerView);
+        this.view$ = createView$(dispatcher, A.VIEW_GAME, defaultView);
+        this.player$ = createView$(dispatcher, A.VIEW_PLAYER, defaultPlayerView);
 
         const isLoggedIn$ = user.details$.map(u => u.isLoggedIn);
 
