@@ -123,7 +123,7 @@ export class Client extends Dispatcher {
                     return;
                 }
 
-                this.setHandlers(new GameHandlers(this. game));
+                this.setHandlers(new GameHandlers(this, game));
                 this.succeed(action);
             }
         });
