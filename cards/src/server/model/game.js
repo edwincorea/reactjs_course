@@ -147,7 +147,7 @@ export class Game extends RoomBase {
         }
 
         const czar = this._nextCzarIndex
-            ? this.players[this._nextCzarIndex] % this.players.length
+            ? this.players[this._nextCzarIndex % this.players.length] 
             : this.players[0];
 
         delete this.__nextCzarIndex;
