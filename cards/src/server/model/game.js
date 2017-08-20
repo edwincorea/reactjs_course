@@ -62,7 +62,7 @@ export class Game extends RoomBase {
     }
 
     addPlayer(id, name) {
-        this._ensureAfter();
+        this._ensureActive();
         const player = new Player(this, id, name);
         this._tick(() => this.players.push(player));
         this.app.dispatcher.emit(A.gameSummaryChanged(this.id, this.summary));
@@ -70,7 +70,7 @@ export class Game extends RoomBase {
     }
 
     sendMessage(client, message) {
-        this._ensureAfter();
+        this._ensureActive();
         this._tick(() => {
             this.messages.push({
                 index: this.messages.length + 1,
@@ -81,7 +81,7 @@ export class Game extends RoomBase {
     }
 
     setOptions(options) {
-        this._ensureAfter();
+        this._ensureActive();
         const validator = new Validator();
         validator.assert(options.scoreLimit >= 3 && options.scoreLimit <= 50, "Score limit must be between 3 and 50");
         if(validator.didFail)
@@ -92,7 +92,7 @@ export class Game extends RoomBase {
     }
 
     start() {
-        this._ensureAfter();
+        this._ensureActive();
         const validator = new Validator();
         validator.assert(this.step == A.STEP_SETUP, "Game already started");
         validator.assert(this.players.length >= MINIMUM_PLAYERS, "Too few players");
@@ -113,7 +113,7 @@ export class Game extends RoomBase {
     }
 
     addCardToStack(card, stackOrStackId) {
-        this._ensureAfter();
+        this._ensureActive();
         if (this.step != A.STEP_CHOOSE_WHITES)
             return Validator.fail("You can't do that now");
 
@@ -125,7 +125,7 @@ export class Game extends RoomBase {
     }
 
     selectStack(stackOrStackId) {
-        this._ensureAfter();
+        this._ensureActive();
         if (this.step != A.STEP_JUDGE_STACKS)
             return Validator.fail("You can't do that now");
 
@@ -134,7 +134,7 @@ export class Game extends RoomBase {
     }
 
     _nextRound(wasCanceled = false) {
-        this._ensureAfter();
+        this._ensureActive();
 
         if (this.round) {
             if (wasCanceled) {
@@ -159,6 +159,63 @@ export class Game extends RoomBase {
             player.onRoundStart();
     }
 
+    //State machine of the game
+    _postTick() {
+        if (!this.isDisposed && this.step != A.STEP_WAIT && this.step != A.STEP_SETUP) {
+            if (this.players.length < MINIMUM_PLAYERS)
+                this._transitionStep(A.WAIT_GAME_OVER, A.WAIT_REASON_TOO_FEW_PLAYERS);
+
+            else if (!this.players.includes(this.round.czar))
+                this._transitionStep(A.WAIT_ROUND_OVER, A.WAIT_REASON_CZAR_LEFT);
+
+            else if (_.keys(this.round.stacks).length == 0)
+                this._transitionStep(A.WAIT_ROUND_OVER, A.WAIT_REASON_TOO_FEW_PLAYERS);
+
+            else if (this.step == A.STEP_CHOOSE_WHITES && this.round.areAllStacksFinished) {
+                this.round.revealStacks();
+                this.step = A.STEP_JUDGE_STACKS;
+            }
+
+            else if (this.step == A.STEP_JUDGE_STACKS && this.round.winningStack) {
+                this.round.winningStack.player.addPoints(1);
+
+                if (_.some(this.players, p => p.score >= this.options.scoreLimit)) {
+                    this._transitionStep(A.WAIT_GAME_OVER, A.WAIT_REASON_GAME_FINISHED);
+                } else {
+                    this._nextCzarIndex = (this.players.indexOf(this.round.czar) + 1) % this.players.length;
+                    this._transitionStep(A.WAIT_ROUND_OVER, A.WAIT_REASON_ROUND_FINISHED);
+                }
+            }
+        }
+    
+        if (this.players.length == 0) {
+            this.dispose();
+        }
+    }
+
+    _transitionStep(type, reason) {
+        this._ensureActive();
+        this.step = A.STEP_WAIT;
+        this.timer = {timeout: 5000, type, reason};
+        setTimeout(() => {
+            if (this.isDisposed)				
+                return;
+
+            this._tick(() => {
+                this.timer = null;
+                if (type == A.WAIT_GAME_OVER) {
+                    this.step = A.STEP_SETUP;
+                    this.round = null;
+                } else if (type == A.WAIT_ROUND_OVER) {
+                    for (let player of this.players)
+                        player.onRoundEnd();
+
+                    this._nextRound(reason != A.WAIT_REASON_ROUND_FINISHED);
+                }
+            });
+        }, 5000);
+    }
+
     dispose() {
         if (this.step == A.STEP_DISPOSED)
             return;
@@ -167,7 +224,7 @@ export class Game extends RoomBase {
         this.app.dispatcher.emit(A.gameDisposed(this.id));        
     }
 
-    _ensureAfter() {
+    _ensureActive() {
         if (this.isDisposed)
             throw new Error("Game has already been disposed");
     }
