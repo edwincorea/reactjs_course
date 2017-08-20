@@ -16,7 +16,7 @@ export class Round {
 
     constructor(blackCard, czar, players) {
         this.areAllStacksRevealed = false;
-        this.blackcard = blackCard;
+        this.blackCard = blackCard;
         this.czar = czar;
         this.stackList = [];
 
